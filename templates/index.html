@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <!-- Meta tags and title for the document -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Profit Analyzer</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    <!-- Google Fonts -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900&amp;display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&amp;display=swap">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.min.css') }}">
+</head>
+
+<body>
+    <!-- Navigation bar (fixed to the top) -->
+    <nav class="navbar navbar-expand-lg fixed-top bg-dark navbar-custom navbar-dark">
+        <div class="container">
+            <!-- Brand title -->
+            <a class="navbar-brand" href="#">PROFIT ANALYZER</a>
+            <!-- Button for toggling collapsed navbar on small screens -->
+            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarResponsive">
+                <span class="visually-hidden">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Collapsible navigation links -->
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Navigation link to Input Data and Analytics pages -->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">INPUT DATA</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('analysis') }}">ANALYTICS</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Header section containing the form for data input -->
+    <header class="text-center text-white masthead">
+        <!-- Masthead content container -->
+        <div class="masthead-content">
+            <div class="container">
+                <!-- Main heading for the homepage -->
+                <h1 class="masthead-heading mb-0">Save N Analyze</h1>
+            </div>
+        </div>
+        <!-- Background circles for design aesthetics -->
+        <div class="bg-circle-1 bg-circle"></div>
+        <div class="bg-circle-2 bg-circle"></div>
+        <div class="bg-circle-3 bg-circle"></div>
+        <div class="bg-circle-4 bg-circle"></div>
+        
+        <!-- Section containing the data input form -->
+        <section class="position-relative py-4 py-xl-5" style="margin: 40px;">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                        <!-- Card container holding the form -->
+                        <div class="card mb-5 pb-5">
+                            <div class="card-body p-sm-5 pt-2">
+                                <!-- Form heading -->
+                                <h2 class="text-center mb-4">Input Data</h2>
+                                <!-- Form for submitting a new transaction -->
+                                <form method="POST" action="/add_transaction" enctype="multipart/form-data">
+                                    <!-- CSRF token for protection -->
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <!-- Input for transaction name -->
+                                    <div class="mb-3">
+                                        <input class="form-control" type="text" name="name" placeholder="Name" required>
+                                    </div>
+                                    <!-- Dropdown for selecting transaction type -->
+                                    <div class="mb-3">
+                                        <select class="form-select" name="transaction_type" required>
+                                            <option value="deposit">Deposit</option>
+                                            <option value="withdrawal">Withdrawal</option>
+                                        </select>
+                                    </div>
+                                    <!-- Input for the transaction amount -->
+                                    <div class="mb-3">
+                                        <input class="form-control" type="number" name="amount" step="0.01"
+                                            placeholder="Amount" required>
+                                    </div>
+                                    <!-- Input for transaction date and time -->
+                                    <div class="mb-3">
+                                        <input class="form-control" type="datetime-local" name="date_time" required>
+                                    </div>
+                                    <!-- Input for uploading a receipt image -->
+                                    <div class="mb-3">
+                                        <input class="form-control" type="file" name="receipt" accept="image/*"
+                                            required>
+                                    </div>
+                                    <!-- Submit button -->
+                                    <div>
+                                        <button class="btn btn-primary d-block w-100" type="submit">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </header>
+    
+    <!-- Footer section -->
+    <footer class="py-5 bg-black">
+        <div class="container">
+            <!-- Copyright notice -->
+            <p class="text-center text-white m-0 small">Copyright&nbsp;© PROFITANALYZER</p>
+        </div>
+    </footer>
+    <!-- Bootstrap JavaScript -->
+    <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
+</body>
+
+</html>

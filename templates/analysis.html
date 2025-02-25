@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en" style="background: #000000;">
+
+<head>
+  <!-- Document metadata and viewport settings -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Analytics - Profit Analyzer</title>
+  <!-- Bootstrap CSS for styling -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+  <!-- Google Fonts for typography -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900&amp;display=swap">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&amp;display=swap">
+  <!-- Custom CSS for additional styling -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.min.css') }}">
+</head>
+
+<body style="background: rgb(0,0,0);">
+  <!-- Navigation bar at the top of the page -->
+  <nav class="navbar navbar-expand-lg fixed-top bg-dark navbar-custom navbar-dark">
+    <div class="container">
+      <!-- Branding title -->
+      <a class="navbar-brand" href="#">PROFIT ANALYZER</a>
+      <!-- Button to toggle navbar for small screens -->
+      <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarResponsive">
+        <span class="visually-hidden">Toggle navigation</span>
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Collapsible navbar links -->
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ms-auto">
+          <!-- Navigation links -->
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">INPUT DATA</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('analysis') }}">ANALYTICS</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header section with a page title and background design elements -->
+  <header class="text-center text-white masthead">
+    <div class="masthead-content">
+      <div class="container">
+        <!-- Main header title for the analytics page -->
+        <h1 class="masthead-heading mb-0">Analytics</h1>
+      </div>
+    </div>
+    <!-- Decorative background circles -->
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+  </header>
+
+  <!-- Main container for page content -->
+  <div class="container py-4 py-xl-5" style="color: rgb(255,255,255);">
+
+    <!-- Section for view selection buttons -->
+    <div class="row mb-4 justify-content-center">
+      <div class="col-auto">
+        <!-- Button to show total analytics view -->
+        <button class="btn btn-primary" onclick="showView('totalView')">Show Total Analytics</button>
+        <!-- Button to show search transactions view -->
+        <button class="btn btn-secondary" onclick="showView('searchView')">Search Transactions</button>
+      </div>
+    </div>
+
+    <!-- Total Analytics View section -->
+    <div id="totalView" class="view-section">
+      <!-- Form to filter totals by date range -->
+      <form method="GET" action="{{ url_for('analysis') }}" class="mb-4">
+        <!-- Hidden input to set search type as totals -->
+        <input type="hidden" name="search_type" value="totals">
+        <div class="input-group mb-3">
+          <!-- Date input for start date -->
+          <input type="date" name="start_date" class="form-control" value="{{ totals.start_date if totals }}">
+          <!-- Date input for end date -->
+          <input type="date" name="end_date" class="form-control" value="{{ totals.end_date if totals }}">
+          <!-- Button to submit the filter -->
+          <button type="submit" class="btn btn-primary">Filter by Date</button>
+          <!-- Link to clear filters -->
+          <a href="{{ url_for('analysis') }}" class="btn btn-secondary">Clear</a>
+        </div>
+      </form>
+
+      <!-- Display alert if a date range filter is active -->
+      {% if totals.start_date and totals.end_date %}
+      <div class="alert alert-info mb-4">
+        Showing analytics from {{ totals.start_date }} to {{ totals.end_date }}
+      </div>
+      {% endif %}
+
+      <!-- Section displaying dynamic total analytics data -->
+      <div class="row gy-4 row-cols-2 row-cols-md-4 justify-content-center align-items-center">
+        <!-- Card for deposit total -->
+        <div class="col">
+          <div class="text-center py-3">
+            <h2 class="fw-bold mb-0">{{ totals.deposits|default(0)|round|int }}+</h2>
+            <p class="mb-0">Deposit</p>
+          </div>
+        </div>
+        <!-- Card for profit total -->
+        <div class="col">
+          <div class="text-center py-3">
+            <h2 class="fw-bold mb-0">{{ totals.profit|default(0)|round|int }}+</h2>
+            <p class="mb-0">Profit</p>
+          </div>
+        </div>
+        <!-- Card for withdrawal total -->
+        <div class="col">
+          <div class="text-center py-3">
+            <h2 class="fw-bold mb-0">{{ totals.withdrawals|default(0)|round|int }}</h2>
+            <p class="mb-0">Withdraw</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Transactions View section -->
+    <div id="searchView" class="view-section" style="display: none;">
+      <!-- Form for filtering transactions by date range -->
+      <form method="GET" action="{{ url_for('analysis') }}" class="mb-4">
+        <!-- Hidden input to set search type as transactions -->
+        <input type="hidden" name="search_type" value="transactions">
+        <div class="input-group mb-3">
+          <!-- Date inputs for filtering search by date -->
+          <input type="date" name="start_date" class="form-control" value="{{ request.args.start_date }}">
+          <input type="date" name="end_date" class="form-control" value="{{ request.args.end_date }}">
+          <!-- Submit button for date search -->
+          <button type="submit" class="btn btn-primary">Search by Date</button>
+        </div>
+      </form>
+      <!-- Form for searching transactions by name -->
+      <form method="GET" action="{{ url_for('analysis') }}" class="mb-4">
+        <!-- Hidden input to set search type as name -->
+        <input type="hidden" name="search_type" value="name">
+        <div class="input-group">
+          <!-- Text input for transaction name search -->
+          <input type="text" name="search" class="form-control" placeholder="Search by transaction name"
+            value="{{ search_query if search_query }}">
+          <!-- Submit button for name search -->
+          <button type="submit" class="btn btn-primary">Search by Name</button>
+        </div>
+      </form>
+
+      <!-- Conditional alert displaying search criteria -->
+      {% if search_results %}
+      <div class="alert alert-info">
+        <!-- If a name search is performed, display the search query -->
+        {% if search_query %}
+        Showing results for: "{{ search_query }}"
+        <!-- Otherwise, if date filters were applied, display the date range -->
+        {% elif start_date and end_date %}
+        Showing transactions between {{ start_date }} and {{ end_date }}
+        {% endif %}
+      </div>
+      <!-- Display transaction cards for each search result -->
+      <div class="row">
+        {% for transaction in search_results %}
+        <div class="col-md-4 mb-4">
+          <div class="card bg-dark text-white">
+            <!-- Receipt image of the transaction -->
+            <img src="{{ url_for('static', filename=transaction.receipt_image) }}" class="card-img-top" alt="Receipt"
+              style="height: 200px; object-fit: cover;">
+            <div class="card-body">
+              <!-- Transaction name -->
+              <h5 class="card-title">{{ transaction.name }}</h5>
+              <p class="card-text">
+                <!-- Transaction type, amount, and date details -->
+                Type: {{ transaction.transaction_type|title }}<br>
+                Amount: ${{ "%.2f"|format(transaction.amount) }}<br>
+                Date: {{ transaction.date }} {{ transaction.time.strftime('%H:%M') }}
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <!-- If no search results found, show a warning alert -->
+      {% elif search_query %}
+      <div class="alert alert-warning">No transactions found for "{{ search_query }}"</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Hidden div storing the current view state to be used for view initialization -->
+  <div id="view-state" data-view="{% if search_results %}search{% else %}total{% endif %}" style="display: none;">
+  </div>
+
+  <!-- JavaScript for handling view toggling based on user interaction and URL hash -->
+  <script>
+    function showView(viewId) {
+      // Hide all view sections to ensure only one is visible at a time
+      document.querySelectorAll('.view-section').forEach(section => {
+        section.style.display = 'none';
+      });
+
+      // Show the section corresponding to the provided view ID
+      const viewElement = document.getElementById(viewId);
+      if (viewElement) {
+        viewElement.style.display = 'block';
+      }
+
+      // Update the URL hash so that the current view can be bookmarked or refreshed
+      window.location.hash = viewId;
+    }
+
+    // When the window loads, initialize the view based on the URL hash or stored view state
+    window.onload = function () {
+      // Retrieve the stored view state from the hidden element
+      const viewState = document.getElementById('view-state').dataset.view;
+      // Extract the view from the URL hash (if available)
+      const hashView = window.location.hash.substring(1);
+
+      // If the URL hash corresponds to a known view, show that view; otherwise, fallback to the stored state
+      if (hashView && ['totalView', 'searchView'].includes(hashView)) {
+        showView(hashView);
+      } else {
+        showView(viewState === 'search' ? 'searchView' : 'totalView');
+      }
+    }
+  </script>
+</body>
+
+</html>
